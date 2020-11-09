@@ -1,7 +1,12 @@
 # Gitea Plugin for openfire
 
 This plugin provides an Openfire hosted GIT service powered by Gitea. 
-For more information on why anyone would want to do that, see https://bejamas.io/blog/git-based-cms-vs-api-first-cms/
+For more information on why anyone would want to do that, see the following:
+
+- https://bejamas.io/blog/git-based-cms-vs-api-first-cms/
+- https://craftercms.org/blog/2020/09/git-based-cms-what-it-is-and-why-you-need-it
+- https://forestry.io/blog/why-we-created-a-git-backed-content-manager/
+- https://snipcart.com/blog/netlify-cms-react-git-workflow
 
 This plugin adds a real-time communication to content management using a familiar GIT based workflow to create a very responsive collaboration platform that will enable an agile team to create, manage and deliver any type of content with quality assurance. It combines the familiar GitHub front-end user interface with the XMPP client ConverseJS to create a a new user experience where all the tools and people need to get a job done are within easy access.
 
