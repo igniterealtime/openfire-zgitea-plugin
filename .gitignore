@@ -1,0 +1,6 @@
+.idea/
+target/
+tempdir/
+classes/linux-64
+classes/win-64
+*.cmd

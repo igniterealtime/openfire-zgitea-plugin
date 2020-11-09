@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<plugin>
+    <author>Inspired Futures Ltd</author>
+    <class>org.ifsoft.gitea.openfire.Gitea</class>
+    <name>${project.name}</name>
+    <description>${project.description}</description>
+    <version>${project.version}</version>
+    <licenseType>Apache 2.0</licenseType>
+    <date>05/09/2020</date>
+    <minServerVersion>4.0.0</minServerVersion>
+
+   <adminconsole>
+        <tab id="tab-server">
+            <sidebar id="sidebar-git" name="Git">        
+                <item id="gitea-settings" name="${config.page.settings}" description="${config.page.settings.description}" url="gitea.jsp"/>
+                <item id="gitea-admin-ui" name="${config.page.admin}" description="${config.page.admin.description}" url="gitea-admin.jsp" />                                                                        
+            </sidebar>
+        </tab>      
+    </adminconsole> 
+</plugin>
