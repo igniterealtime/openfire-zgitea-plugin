@@ -93,6 +93,11 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
         return "3000";
     }
 
+    public String getHome()
+    {
+        return giteaHomePath;
+    }
+
     public String getUrl()
     {
         return "https://" + XMPPServer.getInstance().getServerInfo().getHostname() + ":" + JiveGlobals.getProperty("httpbind.port.secure", "7443") + "/";

@@ -157,20 +157,14 @@
 
         <dependency>
             <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark</artifactId>
-            <version>0.40.8</version>
+            <artifactId>flexmark-all</artifactId>
+            <version>0.62.2</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-profile-pegdown</artifactId>
-            <version>0.40.8</version>
-        </dependency>        
-
+       
         <dependency>
             <groupId>org.asciidoctor</groupId>
             <artifactId>asciidoctorj</artifactId>
-            <version>1.5.8.1</version>
+            <version>1.6.0</version>
         </dependency>
 
         <dependency>
@@ -200,6 +194,12 @@
             <groupId>de.neuland-bfi</groupId>
             <artifactId>jade4j</artifactId>
             <version>1.2.7</version>
+        </dependency>  
+        
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
         </dependency>        
     </dependencies>   
     

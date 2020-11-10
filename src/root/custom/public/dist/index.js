@@ -69,7 +69,7 @@ var converse_api = (function(api)
             if (jbake)
             {
                 jbake.style.display = 'none';
-                jbake.setAttribute("data-repo", repo[1].innerHTML);
+                jbake.setAttribute("data-repo", location.pathname);
 
                 if (jbake_properties)
                 {
@@ -102,19 +102,33 @@ var converse_api = (function(api)
         }
     });
 
-    function setupjBake(repo)
+    function setupjBake(repository)
     {
-        const container = document.querySelector("div.repository > div.ui.container");
-        console.debug("converse_api dojBake", container, repo);
+        gitea.container = document.querySelector("div.repository > div.ui.container");
+        console.debug("converse_api dojBake", gitea);
 
-        render(html`
+        gitea.template = (repo, status) => html
+        `
             <div class="navbar">
-                <div class="ui compact left small menu"></div>
+                <div class="ui left">
+                    <a data-url="/www${repo}/index.html" class="ui blue button" @click=${doView}>View</a>
+                </div>
                 <div class="ui right">
                     <a data-repo="${repo}" class="jbake-proceed ui green button" @click=${dojBake}>Proceed</a>
                 </div>
-            </div>`
-        , container);
+            </div>
+            <div class="ui center">${status}</div>
+            <div class="ui center segment"><img src="/jbake_process.png" /></div>
+        `;
+
+        render(gitea.template(repository, ""), gitea.container);
+    }
+
+    function doView(ev)
+    {
+        const url = ev.target.getAttribute("data-url");
+        console.debug("converse_api doView", url);
+        if (url && url != "null") window.open(url, "jbake_view");
     }
 
     function dojBake(ev)
@@ -122,15 +136,21 @@ var converse_api = (function(api)
         const repo = ev.target.getAttribute("data-repo");
         console.debug("converse_api dojBake", repo, gitea.username);
 
-        const options = {method: "GET", headers: {"authorization": "Basic " + btoa(gitea.username + ":" + gitea.password), "accept": "application/json"}};
-
-        fetch("https://" + location.host + "/jsp/bake_repo.jsp?repo=" + repo, options).then(function(response){ return response.json()}).then(function(response)
+        if (repo && repo != "null")
         {
-            console.log("converse_api dojBake response", response);
+            render(gitea.template(repo, "baking..."), gitea.container);
+            const options = {method: "GET", headers: {"authorization": "Basic " + btoa(gitea.username + ":" + gitea.password), "accept": "application/json"}};
 
-        }).catch(function (err) {
-            console.error("converse_api dojBake error", err);
-        });
+            fetch("https://" + location.host + "/jsp/bake_repo.jsp?repo=" + repo, options).then(function(response){ return response.json()}).then(function(response)
+            {
+                console.log("converse_api dojBake response", response);
+                render(gitea.template(repo, response.status), gitea.container);
+
+            }).catch(function (err) {
+                console.error("converse_api dojBake error", err);
+                render(gitea.template(repo, err), gitea.container);
+            });
+        }
     }
 
     function setupConverse()

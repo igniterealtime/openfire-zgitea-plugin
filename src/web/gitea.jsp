@@ -11,7 +11,7 @@
     String errorMessage = null;
 
     // Get handle on the plugin
-    Gitea plugin = (Gitea) XMPPServer.getInstance().getPluginManager().getPlugin("zgitea");
+    Gitea plugin = Gitea.self;
 
     if (update)
     {    
