@@ -15,7 +15,7 @@
     <version>0.0.1-SNAPSHOT</version>
     
     <properties>   
-        <gitea.version>1.13.0-rc1</gitea.version>        
+        <gitea.version>1.13.0-rc2</gitea.version>        
     </properties>    
 
     <name>Gitea</name>
