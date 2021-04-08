@@ -15,7 +15,7 @@
     <version>0.0.1-SNAPSHOT</version>
     
     <properties>   
-        <gitea.version>1.13.0-rc2</gitea.version>        
+        <gitea.version>1.13.7</gitea.version>        
     </properties>    
 
     <name>Gitea</name>
@@ -95,31 +95,12 @@
                </executions>
             </plugin>    
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                      <fork>true</fork>
-                      <compilerArgument>-XDignore.symbol.file</compilerArgument>                    
-                </configuration>
-            </plugin>        
-            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-jspc-maven-plugin</artifactId>
-                <version>9.2.14.v20151106</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.igniterealtime.openfire</groupId>
-                        <artifactId>xmppserver</artifactId>
-                        <version>${openfire.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>           
+            </plugin>          
         </plugins>
     </build>
 
