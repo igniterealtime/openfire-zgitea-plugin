@@ -49,7 +49,7 @@ import de.mxro.process.*;
 public class Gitea implements Plugin, PropertyEventListener, ProcessListener
 {
     private static final Logger Log = LoggerFactory.getLogger(Gitea.class);
-    private static final String GITEA_VERSION = "1.13.7";
+    private static final String GITEA_VERSION = "1.14.0";
     private XProcess giteaThread = null;
     private String giteaExePath = null;
     private String giteaHomePath = null;
@@ -305,7 +305,7 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
         //JiveGlobals.setProperty("cache.group.maxLifetime", "60000");
         //JiveGlobals.setProperty("cache.userCache.maxLifetime", "60000");
 
-        String iniFileName = giteaHomePath + "/custom/conf/app.ini";
+        String iniFileName = giteaHomePath + File.separator + "custom" + File.separator + "conf" + File.separator + "app.ini";
         File iniFilePath = new File(iniFileName);
 
         if (!iniFilePath.exists())
@@ -327,8 +327,8 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
             lines.add( "DOMAIN           = " + XMPPServer.getInstance().getServerInfo().getXMPPDomain());
             lines.add( "HTTP_PORT        = " + JiveGlobals.getProperty("gitea.port", getPort()));
             lines.add( "ROOT_URL         = " + JiveGlobals.getProperty("gitea.url", getUrl()));
-            lines.add( "STATIC_ROOT_PATH = " + giteaHomePath);
-            lines.add( "APP_DATA_PATH    = " + giteaRoot);
+            lines.add( "STATIC_ROOT_PATH = " + giteaHomePath.replace("\\", "/"));
+            lines.add( "APP_DATA_PATH    = " + giteaRoot.replace("\\", "/"));
 
             lines.add( "[other]");
             lines.add( "SHOW_FOOTER_BRANDING = true");
@@ -427,6 +427,15 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
     {
         final UserManager userManager = XMPPServer.getInstance().getUserManager();
         final String administrator = JiveGlobals.getProperty("gitea.username", "administrator");
+		
+		String domain = XMPPServer.getInstance().getServerInfo().getXMPPDomain();
+		String authorizedJIDs = JiveGlobals.getProperty("admin.authorizedJIDs", "");
+
+		if (authorizedJIDs.indexOf(administrator) == -1)
+		{
+			authorizedJIDs = authorizedJIDs + "," + administrator + "@" + domain;
+			JiveGlobals.setProperty("admin.authorizedJIDs", authorizedJIDs);
+		}		
 
         if ( !userManager.isRegisteredUser( administrator ) )
         {
@@ -443,15 +452,6 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
             {
                 userManager.createUser(administrator, password, "Administrator (generated)", null);
                 JiveGlobals.setProperty("gitea.password", password );
-
-                String domain = XMPPServer.getInstance().getServerInfo().getXMPPDomain();
-                String authorizedJIDs = JiveGlobals.getProperty("admin.authorizedJIDs", "");
-
-                if (authorizedJIDs.indexOf(administrator) == -1)
-                {
-                    authorizedJIDs = authorizedJIDs + "," + administrator + "@" + domain;
-                    JiveGlobals.setProperty("admin.authorizedJIDs", authorizedJIDs);
-                }
             }
             catch ( Exception e )
             {

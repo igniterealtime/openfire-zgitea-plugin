@@ -1,4 +1,4 @@
-import { html, render } from '/dist/lit-html.min.js';
+//import { html, render } from '/dist/lit-html.min.js';
 
 var converse_api = (function(api)
 {
@@ -81,7 +81,8 @@ var converse_api = (function(api)
                         console.debug("converse_api jbake", repo);
                         active.classList.remove("active");
                         jbake.classList.add("active");
-                        setupjBake(repo);
+						// TODO fix module load issue
+                        //setupjBake(repo);
                     });
                 }
             }
