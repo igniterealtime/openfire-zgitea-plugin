@@ -6,6 +6,9 @@ This Openfire plugin adds a real-time communication to content management using 
 
 [![Build Status](https://github.com/igniterealtime/openfire-zgitea-plugin/workflows/Java%20CI/badge.svg)](https://github.com/igniterealtime/openfire-zgitea-plugin/actions)
 
+<img src=https://user-images.githubusercontent.com/110731/114323755-9f5e1780-9b1e-11eb-948d-0c52fd0dd79f.png />
+
 ## Reporting Issues
+
 
 Issues may be reported to the [forums](https://discourse.igniterealtime.org) or via this repo's [Github Issues](https://github.com/igniterealtime/openfire-zgitea-plugin).
