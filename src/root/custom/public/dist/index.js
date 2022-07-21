@@ -1,4 +1,4 @@
-//import { html, render } from '/dist/lit-html.min.js';
+//import { html, render } from '/assets/dist/lit-html.min.js';
 
 var converse_api = (function(api)
 {
@@ -119,7 +119,7 @@ var converse_api = (function(api)
                 </div>
             </div>
             <div class="ui center">${status}</div>
-            <div class="ui center segment"><img src="/jbake_process.png" /></div>
+            <div class="ui center segment"><img src="/assets/jbake_process.png" /></div>
         `;
 
         render(gitea.template(repository, ""), gitea.container);
@@ -165,11 +165,13 @@ var converse_api = (function(api)
         var config =
         {
             theme: 'concord',
+			assets_path: "/assets/dist/",			
             allow_non_roster_messaging: true,
             loglevel: 'info',
             authentication: 'login',
             auto_login: true,
             password: gitea.password,
+		    discover_connection_methods: false,					
             jid: gitea.username + '@' + location.hostname,
             default_domain: location.hostname,
             domain_placeholder: location.hostname,
@@ -181,6 +183,7 @@ var converse_api = (function(api)
             auto_join_rooms: gitea.repo,
             auto_join_private_chats: gitea.follow,
             message_archiving: 'always',
+			websocket_url: (location.host == "localhost:7070" || location.protocol == "http:" ? "ws://" : "wss://") + location.host + '/ws/',
             whitelisted_plugins: ['gitea']
         }
 
@@ -256,7 +259,7 @@ var converse_api = (function(api)
     function loadJS(name)
     {
         var s1 = document.createElement('script');
-        s1.src = name;
+        s1.src ="/assets" + name;
         s1.async = false;
         document.body.appendChild(s1);
     }
@@ -267,7 +270,7 @@ var converse_api = (function(api)
         var link  = document.createElement('link');
         link.rel  = 'stylesheet';
         link.type = 'text/css';
-        link.href = name;
+        link.href = "/assets" + name;
         head.appendChild(link);
     }
 

@@ -49,7 +49,7 @@ import de.mxro.process.*;
 public class Gitea implements Plugin, PropertyEventListener, ProcessListener
 {
     private static final Logger Log = LoggerFactory.getLogger(Gitea.class);
-    private static final String GITEA_VERSION = "1.14.0";
+    private static final String GITEA_VERSION = "1.16.9";
     private XProcess giteaThread = null;
     private String giteaExePath = null;
     private String giteaHomePath = null;
@@ -212,7 +212,7 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
             }
             else if(OSUtils.IS_WINDOWS64)
             {
-                gitea = "gitea-" + GITEA_VERSION + "-windows-4.0-amd64.exe";
+                gitea = "gitea-" + GITEA_VERSION + "-gogit-windows-4.0-amd64.exe";
                 giteaHomePath = giteaHomePath + File.separator + "win-64";
                 giteaExePath = giteaHomePath + File.separator + gitea;
                 makeFileExecutable(giteaExePath);
