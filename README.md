@@ -8,7 +8,8 @@ This Openfire plugin adds a real-time communication to content management using 
 
 ![image](https://user-images.githubusercontent.com/110731/98564036-ca101f80-22a3-11eb-9f79-6d6705136cd8.png)
 
-<img src=https://user-images.githubusercontent.com/110731/114323755-9f5e1780-9b1e-11eb-948d-0c52fd0dd79f.png />
+
+![image](https://user-images.githubusercontent.com/110731/180422009-3ef9255b-0f27-4b93-b06a-f250aeaf69c1.png)
 
 ## Reporting Issues
 
