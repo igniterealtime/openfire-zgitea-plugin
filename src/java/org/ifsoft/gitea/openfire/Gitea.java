@@ -170,8 +170,10 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
 
             giteaContext = new ServletContextHandler(null, "/", ServletContextHandler.SESSIONS);
             giteaContext.setClassLoader(this.getClass().getClassLoader());
-
-            giteaThread = Spawn.startProcess(giteaExePath, new File(giteaHomePath), this);
+			
+			String parameters = " --config " + giteaRoot + "/app.ini";
+            giteaThread = Spawn.startProcess(giteaExePath + parameters, new File(giteaHomePath), this);
+			
             ServletHolder proxyServlet = new ServletHolder(ProxyServlet.Transparent.class);
             String giteaUrl = "http://" + JiveGlobals.getProperty("gitea.ipaddr", getIpAddress()) + ":" + JiveGlobals.getProperty("gitea.port", getPort());
             proxyServlet.setInitParameter("proxyTo", giteaUrl);
@@ -191,16 +193,15 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
     {
         try
         {
-            giteaRoot = JiveGlobals.getHomeDirectory() + File.separator + "gitea";
+            giteaRoot = (JiveGlobals.getHomeDirectory() + File.separator + "gitea").replace("\\", "/");
 
             File giteaRootPath = new File(giteaRoot);
 
-            if (!giteaRootPath.exists())
-            {
-                giteaRootPath.mkdirs();
+            if (!giteaRootPath.exists()) {
+                giteaRootPath.mkdirs();							
             }
 
-            giteaHomePath = pluginDirectory.getAbsolutePath() + File.separator + "classes";
+            giteaHomePath = (pluginDirectory.getAbsolutePath() + File.separator + "classes").replace("\\", "/");
             String gitea = null;
 
             if(OSUtils.IS_LINUX64)
@@ -305,7 +306,7 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
         //JiveGlobals.setProperty("cache.group.maxLifetime", "60000");
         //JiveGlobals.setProperty("cache.userCache.maxLifetime", "60000");
 
-        String iniFileName = giteaHomePath + File.separator + "custom" + File.separator + "conf" + File.separator + "app.ini";
+        String iniFileName = giteaRoot + "/app.ini";
         File iniFilePath = new File(iniFileName);
 
         if (!iniFilePath.exists())
@@ -327,8 +328,8 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
             lines.add( "DOMAIN           = " + XMPPServer.getInstance().getServerInfo().getXMPPDomain());
             lines.add( "HTTP_PORT        = " + JiveGlobals.getProperty("gitea.port", getPort()));
             lines.add( "ROOT_URL         = " + JiveGlobals.getProperty("gitea.url", getUrl()));
-            lines.add( "STATIC_ROOT_PATH = " + giteaHomePath.replace("\\", "/"));
-            lines.add( "APP_DATA_PATH    = " + giteaRoot.replace("\\", "/"));
+            lines.add( "STATIC_ROOT_PATH = " + giteaHomePath);
+            lines.add( "APP_DATA_PATH    = " + giteaRoot);
 
             lines.add( "[other]");
             lines.add( "SHOW_FOOTER_BRANDING = true");

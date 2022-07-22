@@ -98,6 +98,8 @@ var converse_api = (function(api)
             loadCSS('/dist/converse.min.css');
             loadJS('/dist/libsignal-protocol.min.js');
             loadJS('/dist/converse.min.js');
+			
+            loadJS('/packages/galene/galene.js');			
 
             setupConverse();
         }
@@ -184,7 +186,7 @@ var converse_api = (function(api)
             auto_join_private_chats: gitea.follow,
             message_archiving: 'always',
 			websocket_url: (location.host == "localhost:7070" || location.protocol == "http:" ? "ws://" : "wss://") + location.host + '/ws/',
-            whitelisted_plugins: ['gitea']
+            whitelisted_plugins: ['gitea', 'galene']
         }
 
         console.debug("converse_api setupConverse", config);
