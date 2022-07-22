@@ -1,4 +1,4 @@
-//import { html, render } from '/assets/dist/lit-html.min.js';
+import { html, render } from '/assets/dist/lit-html.min.js';
 
 var converse_api = (function(api)
 {
@@ -82,7 +82,7 @@ var converse_api = (function(api)
                         active.classList.remove("active");
                         jbake.classList.add("active");
 						// TODO fix module load issue
-                        //setupjBake(repo);
+                        setupjBake(repo);
                     });
                 }
             }
@@ -114,7 +114,7 @@ var converse_api = (function(api)
         `
             <div class="navbar">
                 <div class="ui left">
-                    <a data-url="/www${repo}/index.html" class="ui blue button" @click=${doView}>View</a>
+                    <a data-url="/assets/www${repo}/index.html" class="ui blue button" @click=${doView}>View</a>
                 </div>
                 <div class="ui right">
                     <a data-repo="${repo}" class="jbake-proceed ui green button" @click=${dojBake}>Proceed</a>
