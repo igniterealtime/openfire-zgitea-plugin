@@ -53,6 +53,7 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
     private XProcess giteaThread = null;
     private String giteaExePath = null;
     private String giteaHomePath = null;
+	private String hugoExePath = null;
     private String giteaRoot = null;
     private ExecutorService executor;
     private ServletContextHandler giteaContext;
@@ -93,6 +94,11 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
         return "3000";
     }
 
+    public String getHugoExePath()
+    {
+        return hugoExePath;
+    }
+	
     public String getHome()
     {
         return giteaHomePath;
@@ -203,6 +209,7 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
 
             giteaHomePath = (pluginDirectory.getAbsolutePath() + File.separator + "classes").replace("\\", "/");
             String gitea = null;
+            String hugo = null;			
 
             if(OSUtils.IS_LINUX64)
             {
@@ -210,6 +217,9 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
                 giteaHomePath = giteaHomePath + File.separator + "linux-64";
                 giteaExePath = giteaHomePath + File.separator + gitea;
                 makeFileExecutable(giteaExePath);
+				
+                hugoExePath = giteaHomePath + File.separator + "hugo";
+                makeFileExecutable(hugoExePath);				
             }
             else if(OSUtils.IS_WINDOWS64)
             {
@@ -217,6 +227,9 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
                 giteaHomePath = giteaHomePath + File.separator + "win-64";
                 giteaExePath = giteaHomePath + File.separator + gitea;
                 makeFileExecutable(giteaExePath);
+				
+                hugoExePath = giteaHomePath + File.separator + "hugo.exe";
+                makeFileExecutable(hugoExePath);					
 
             } else {
                 Log.error("checkNatives unknown OS " + pluginDirectory.getAbsolutePath());

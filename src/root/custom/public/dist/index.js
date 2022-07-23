@@ -1,9 +1,9 @@
 import { html, render } from '/assets/dist/lit-html.min.js';
 
+let Strophe, $iq, $msg, $pres, _ , __, dayjs, converse_html, _converse, gitea;
+	
 var converse_api = (function(api)
 {
-    let Strophe, $iq, $msg, $pres, _ , __, dayjs, converse_html, _converse, gitea;
-
     window.addEventListener("unload", function()
     {
         console.debug("converse_api addListener unload");
@@ -57,7 +57,7 @@ var converse_api = (function(api)
             console.debug("converse_api gitea follow", gitea.follow);
         }
 
-        if (repo && repo.length > 1)
+        if (repo && repo.length == 2 && repo[1].innerHTML.indexOf("/") == -1 && repo[1].innerHTML.indexOf("\t") == -1)
         {
             gitea.repo.push(repo[1].innerHTML + '@conference.' + location.hostname);
             console.debug("converse_api gitea repo", gitea.repo);
@@ -71,8 +71,7 @@ var converse_api = (function(api)
                 jbake.style.display = 'none';
                 jbake.setAttribute("data-repo", location.pathname);
 
-                if (jbake_properties)
-                {
+                if (jbake_properties) {
                     jbake.style.display = '';
 
                     jbake.addEventListener("click", function(evt)
@@ -81,11 +80,32 @@ var converse_api = (function(api)
                         console.debug("converse_api jbake", repo);
                         active.classList.remove("active");
                         jbake.classList.add("active");
-						// TODO fix module load issue
                         setupjBake(repo);
                     });
                 }
             }
+			
+            const config_toml = document.querySelector("a[title='config.toml']");
+            const hugo = document.querySelector(".repository .hugo-tab");
+
+            if (hugo)
+            {
+                hugo.style.display = 'none';
+                hugo.setAttribute("data-repo", location.pathname);
+
+                if (config_toml) {
+                    hugo.style.display = '';
+
+                    hugo.addEventListener("click", function(evt)
+                    {
+                        const repo = evt.target.getAttribute("data-repo");
+                        console.debug("converse_api hugo", repo);
+                        active.classList.remove("active");
+                        hugo.classList.add("active");
+                        setupHugo(repo);
+                    });
+                }
+            }			
         }
 
         gitea.password = sessionStorage.getItem("gitea_password");
@@ -97,18 +117,62 @@ var converse_api = (function(api)
         {
             loadCSS('/dist/converse.min.css');
             loadJS('/dist/libsignal-protocol.min.js');
-            loadJS('/dist/converse.min.js');
+            loadJS('/dist/converse.js');
 			
             loadJS('/packages/galene/galene.js');			
 
             setupConverse();
         }
     });
+	
+    function setupHugo(repository)
+    {
+        gitea.container = document.querySelector("div.repository > div.ui.container");
+        console.debug("converse_api setupHugo", gitea);
 
+        gitea.template = (repo, status) => html
+        `
+            <div class="navbar">
+                <div class="ui left">
+                    <a data-url="/assets/www${repo}/index.html" class="ui blue button" @click=${doView}>View</a>
+                </div>
+                <div class="ui right">
+                    <a data-repo="${repo}" class="jbake-proceed ui green button" @click=${doHugo}>Proceed</a>
+                </div>
+            </div>
+            <div class="ui center">${status}</div>
+            <div class="ui center segment"><img src="/assets/jbake_process.png" /></div>
+        `;
+
+        render(gitea.template(repository, ""), gitea.container);
+    }
+	
+    function doHugo(ev)
+    {
+        const repo = ev.target.getAttribute("data-repo");
+        console.debug("converse_api doHugo", repo, gitea.username);
+
+        if (repo && repo != "null")
+        {
+            render(gitea.template(repo, "baking..."), gitea.container);
+            const options = {method: "GET", headers: {"authorization": "Basic " + btoa(gitea.username + ":" + gitea.password), "accept": "application/json"}};
+
+            fetch(location.protocol + "//" + location.host + "/jsp/hugo_repo.jsp?repo=" + repo, options).then(function(response){ return response.json()}).then(function(response)
+            {
+                console.log("converse_api doHugo response", response);
+                render(gitea.template(repo, response.status), gitea.container);
+
+            }).catch(function (err) {
+                console.error("converse_api doHugo error", err);
+                render(gitea.template(repo, err), gitea.container);
+            });
+        }
+    }	
+	
     function setupjBake(repository)
     {
         gitea.container = document.querySelector("div.repository > div.ui.container");
-        console.debug("converse_api dojBake", gitea);
+        console.debug("converse_api setupjBake", gitea);
 
         gitea.template = (repo, status) => html
         `
@@ -127,13 +191,6 @@ var converse_api = (function(api)
         render(gitea.template(repository, ""), gitea.container);
     }
 
-    function doView(ev)
-    {
-        const url = ev.target.getAttribute("data-url");
-        console.debug("converse_api doView", url);
-        if (url && url != "null") window.open(url, "jbake_view");
-    }
-
     function dojBake(ev)
     {
         const repo = ev.target.getAttribute("data-repo");
@@ -144,7 +201,7 @@ var converse_api = (function(api)
             render(gitea.template(repo, "baking..."), gitea.container);
             const options = {method: "GET", headers: {"authorization": "Basic " + btoa(gitea.username + ":" + gitea.password), "accept": "application/json"}};
 
-            fetch("https://" + location.host + "/jsp/bake_repo.jsp?repo=" + repo, options).then(function(response){ return response.json()}).then(function(response)
+            fetch(location.protocol + "//" + location.host + "/jsp/bake_repo.jsp?repo=" + repo, options).then(function(response){ return response.json()}).then(function(response)
             {
                 console.log("converse_api dojBake response", response);
                 render(gitea.template(repo, response.status), gitea.container);
@@ -156,6 +213,13 @@ var converse_api = (function(api)
         }
     }
 
+    function doView(ev)
+    {
+        const url = ev.target.getAttribute("data-url");
+        console.debug("converse_api doView", url);
+        if (url && url != "null") window.open(url, "website_view");
+    }
+	
     function setupConverse()
     {
         if (!window.converse)
@@ -189,7 +253,7 @@ var converse_api = (function(api)
             whitelisted_plugins: ['gitea', 'galene']
         }
 
-        console.debug("converse_api setupConverse", config);
+        console.debug("converse_api setupConverse", config, gitea);
 
         converse.plugins.add("gitea", {
             dependencies: [],

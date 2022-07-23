@@ -16,6 +16,7 @@
     
     <properties>   
         <gitea.version>1.16.9</gitea.version>        
+        <hugo.version>0.101.0</hugo.version>  		
     </properties>    
 
     <name>Gitea</name>
@@ -29,7 +30,7 @@
                 <version>1.3.0</version>
                 <executions>
                     <execution>
-                        <id>retrieve-win-64</id>
+                        <id>gitea-retrieve-win-64</id>
                         <phase>prepare-package</phase>
                         <goals>
                             <goal>wget</goal>
@@ -41,7 +42,7 @@
                         </configuration>
                     </execution>   
                     <execution>
-                        <id>retrieve-linux-64</id>
+                        <id>gitea-retrieve-linux-64</id>
                         <phase>prepare-package</phase>
                         <goals>
                             <goal>wget</goal>
@@ -49,6 +50,30 @@
                         <configuration>
                             <url>https://github.com/go-gitea/gitea/releases/download/v${gitea.version}/gitea-${gitea.version}-linux-amd64</url>
                             <unpack>false</unpack>
+                            <outputDirectory>classes/linux-64</outputDirectory>
+                        </configuration>
+                    </execution> 
+                    <execution>
+                        <id>hugo-retrieve-win-64</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://github.com/gohugoio/hugo/releases/download/v${hugo.version}/hugo_extended_${hugo.version}_Windows-64bit.zip</url>
+                            <unpack>true</unpack>
+                            <outputDirectory>classes/win-64</outputDirectory>
+                        </configuration>
+                    </execution>   
+                    <execution>
+                        <id>hugo-retrieve-linux-64</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://github.com/gohugoio/hugo/releases/download/v${hugo.version}/hugo_${hugo.version}_Linux-64bit.tar.gz</url>
+                            <unpack>true</unpack>
                             <outputDirectory>classes/linux-64</outputDirectory>
                         </configuration>
                     </execution>                     
