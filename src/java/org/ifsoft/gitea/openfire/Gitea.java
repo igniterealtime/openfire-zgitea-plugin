@@ -168,11 +168,16 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
     private void startGoProcesses()
     {
         boolean giteaEnabled = JiveGlobals.getBooleanProperty("gitea.enabled", true);
+		boolean giteaSync = JiveGlobals.getBooleanProperty("gitea.sync.db", false);
 
         if (giteaExePath != null && giteaEnabled)
         {
             createAdminUser();
-            setupGiteaJDBC();
+			setupGiteaConfig();
+			
+            if (giteaSync &&  getDBName() != null) {
+				setupGiteaJDBC();
+			}
 
             giteaContext = new ServletContextHandler(null, "/", ServletContextHandler.SESSIONS);
             giteaContext.setClassLoader(this.getClass().getClassLoader());
@@ -318,7 +323,11 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
         //JiveGlobals.setProperty("cache.groupMeta.maxLifetime", "60000");
         //JiveGlobals.setProperty("cache.group.maxLifetime", "60000");
         //JiveGlobals.setProperty("cache.userCache.maxLifetime", "60000");
-
+		
+	}
+    
+	private void setupGiteaConfig()	 {
+		String dbName = getDBName();
         String iniFileName = giteaRoot + "/app.ini";
         File iniFilePath = new File(iniFileName);
 
@@ -328,13 +337,19 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
 
             List<String> lines = new ArrayList<String>();
             lines.add( "[database]");
-            lines.add( "DB_TYPE  = mysql");
-            lines.add( "HOST     = 127.0.0.1:3306");
-            lines.add( "NAME     = " + getDBName());
-            lines.add( "USER     = " + getdBUsername());
-            lines.add( "PASSWD   = " + getdBPassword());
-            lines.add( "SSL_MODE = disable");
-            lines.add( "CHARSET  = utf8");
+			
+			if (dbName != null) {
+				lines.add( "DB_TYPE  = mysql");
+				lines.add( "HOST     = 127.0.0.1:3306");
+				lines.add( "NAME     = " + dbName);
+				lines.add( "USER     = " + getdBUsername());
+				lines.add( "PASSWD   = " + getdBPassword());
+				lines.add( "SSL_MODE = disable");
+				lines.add( "CHARSET  = utf8");
+			} else {
+				lines.add( "DB_TYPE  = sqlite3");
+				lines.add( "PATH     = " + giteaRoot + "/gitea.db");				
+			}
 
             lines.add( "[server]");
             lines.add( "SSH_DOMAIN       = " + XMPPServer.getInstance().getServerInfo().getHostname());
@@ -345,9 +360,9 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
             lines.add( "APP_DATA_PATH    = " + giteaRoot);
 
             lines.add( "[other]");
-            lines.add( "SHOW_FOOTER_BRANDING = true");
-            lines.add( "SHOW_FOOTER_VERSION = true");
-            lines.add( "SHOW_FOOTER_TEMPLATE_LOAD_TIME = true");
+            lines.add( "SHOW_FOOTER_BRANDING = false");
+            lines.add( "SHOW_FOOTER_VERSION = false");
+            lines.add( "SHOW_FOOTER_TEMPLATE_LOAD_TIME = false");
 
             lines.add( "[cors]");
             lines.add( "ENABLED = true");
@@ -423,16 +438,20 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
 
     private String getDBName()
     {
+        String defaultName = null;		
         String serverURL = JiveGlobals.getXMLProperty("database.defaultProvider.serverURL");
-        String defaultName = "openfire";
+		
+		if (serverURL != null) {
+			defaultName = "openfire";
 
-        int pos = serverURL.indexOf("3306");
+			int pos = serverURL.indexOf("3306");
 
-        if (pos > -1) defaultName = serverURL.substring(pos + 5);
+			if (pos > -1) defaultName = serverURL.substring(pos + 5);
 
-        pos = defaultName.indexOf("?");
+			pos = defaultName.indexOf("?");
 
-        if (pos > -1) defaultName = defaultName.substring(0, pos);
+			if (pos > -1) defaultName = defaultName.substring(0, pos);
+		}
 
         return defaultName;
     }
@@ -443,8 +462,12 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
         final String administrator = JiveGlobals.getProperty("gitea.username", "administrator");
 		
 		String domain = XMPPServer.getInstance().getServerInfo().getXMPPDomain();
-		String authorizedJIDs = JiveGlobals.getProperty("admin.authorizedJIDs", "");
+		String authorizedJIDs = JiveGlobals.getProperty("admin.authorizedJIDs", null);
 
+		if (authorizedJIDs == null) {
+			authorizedJIDs = "admin@" + domain;
+		}
+		
 		if (authorizedJIDs.indexOf(administrator) == -1)
 		{
 			authorizedJIDs = authorizedJIDs + "," + administrator + "@" + domain;
@@ -455,7 +478,7 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
         {
             Log.info( "No administrator user detected. Generating one." );
 
-            String password = JiveGlobals.getProperty("gitea.password", StringUtils.randomString( 40 ));
+            String password = JiveGlobals.getProperty("gitea.password", "gitea");
 
             if ( password == null || password.isEmpty() )
             {

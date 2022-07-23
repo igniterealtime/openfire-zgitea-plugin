@@ -29,9 +29,12 @@
         
         String url = request.getParameter("url");     
         JiveGlobals.setProperty("gitea.url", url);         
+
+        String sync_db = request.getParameter("sync_db");
+        JiveGlobals.setProperty("gitea.sync.db", (sync_db != null && sync_db.equals("on")) ? "true": "false");     
         
         String enabled = request.getParameter("enabled");
-        JiveGlobals.setProperty("gitea.enabled", (enabled != null && enabled.equals("on")) ? "true": "false");        
+        JiveGlobals.setProperty("gitea.enabled", (enabled != null && enabled.equals("on")) ? "true": "false");    	
     }
 
 %>
@@ -65,6 +68,12 @@
                     <fmt:message key="config.page.configuration.enabled" />       
                 </td>  
             </tr>
+            <tr>
+                <td nowrap  colspan="2">
+                    <input type="checkbox" name="sync_db"<%= (JiveGlobals.getProperty("gitea.sync.db", "false").equals("true")) ? " checked" : "" %>>
+                    <fmt:message key="config.page.configuration.sync_db" />       
+                </td>  
+            </tr>			
             <tr>
                 <td align="left" width="150">
                     <fmt:message key="config.page.configuration.username"/>
