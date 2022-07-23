@@ -181,6 +181,7 @@ public class GiteaSaslServer implements SaslServer
 
         URI dataUri = null;
 
+/*
         try {
             URL url = new URL(avatarUrl);
 
@@ -204,15 +205,16 @@ public class GiteaSaslServer implements SaslServer
                     dataUri = new URI("data:" + contentType + ";base64," + Base64.getEncoder().encodeToString(os.toByteArray()));
 
                 } catch (IOException e) {
-                    Log.error("error loading data from url", e);
+                    Log.error("error loading data from url " + avatarUrl, e);
                 } catch (URISyntaxException e) {
-                    Log.error("error building uri", e);
+                    Log.error("error building uri " + avatarUrl, e);
                 }
             }
-        } catch (MalformedURLException e) {
+        } catch (Exception e) {
             Log.error("error building url " + avatarUrl, e);
         }
-        return dataUri.toString();
+*/		
+        return dataUri == null ? null : dataUri.toString();
     }
 
     public boolean isComplete()
