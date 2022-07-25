@@ -49,7 +49,7 @@
 					Log.info("Hugo process quit " + code);
 				}				
 			});
-            status = "baked ok";        
+            status = "published ok";        
 
         } catch (Exception e) {
             status = e.toString();
