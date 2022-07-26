@@ -12,6 +12,12 @@ This Openfire plugin adds a real-time communication to content management using 
 ## Gitea with Real-time Communications Screenshot
 ![image](https://user-images.githubusercontent.com/110731/180422009-3ef9255b-0f27-4b93-b06a-f250aeaf69c1.png)
 
+## Gitea with H5P Renderer
+![image](https://user-images.githubusercontent.com/110731/180979662-9c7c50f8-7b9f-4721-9e7a-f61ae8743771.png)
+
+## Gitea with Adaptive Cards Renderer
+![image](https://user-images.githubusercontent.com/110731/180980030-0cd44804-3990-400d-8fd2-a92e55bc721b.png)
+
 ## Reporting Issues
 
 Issues may be reported to the [forums](https://discourse.igniterealtime.org) or via this repo's [Github Issues](https://github.com/igniterealtime/openfire-zgitea-plugin).
