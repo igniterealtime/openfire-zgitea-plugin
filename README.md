@@ -18,6 +18,12 @@ This Openfire plugin adds a real-time communication to content management using 
 ## Gitea with Adaptive Cards Renderer
 ![image](https://user-images.githubusercontent.com/110731/180980030-0cd44804-3990-400d-8fd2-a92e55bc721b.png)
 
+## Gitea with jBake Static Web Site Generator
+![image](https://user-images.githubusercontent.com/110731/180982658-a42d6910-9b0f-4a70-8588-7759345f02fc.png)
+
+## Gitea with Hugo Static Web Site Generator
+![image](https://user-images.githubusercontent.com/110731/180982810-4a8b7ffc-4ecd-4710-a1fd-dea2d66a5999.png)
+
 ## Reporting Issues
 
 Issues may be reported to the [forums](https://discourse.igniterealtime.org) or via this repo's [Github Issues](https://github.com/igniterealtime/openfire-zgitea-plugin).
