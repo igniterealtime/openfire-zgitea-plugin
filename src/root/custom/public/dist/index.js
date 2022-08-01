@@ -57,7 +57,7 @@ var converse_api = (function(api)
             console.debug("converse_api gitea follow", gitea.follow);
         }
 
-        if (repo && repo.length == 2 && repo[1].innerHTML.indexOf("/") == -1 && repo[1].innerHTML.indexOf("\t") == -1 && repo[1].innerHTML.indexOf(" ") == -1)
+        if (repo && repo.length >= 2 && repo[1].innerHTML.indexOf("/") == -1 && repo[1].innerHTML.indexOf("\t") == -1 && repo[1].innerHTML.indexOf(" ") == -1)
         {
             gitea.repo.push(repo[1].innerHTML + '@conference.' + location.hostname);
             console.debug("converse_api gitea repo", gitea.repo);

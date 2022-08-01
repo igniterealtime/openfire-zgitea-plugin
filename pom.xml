@@ -15,7 +15,7 @@
     <version>0.0.2-SNAPSHOT</version>
     
     <properties>   
-        <gitea.version>1.16.9</gitea.version>        
+        <gitea.version>1.17.0</gitea.version>        
         <hugo.version>0.101.0</hugo.version>  		
     </properties>    
 

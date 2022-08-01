@@ -7,7 +7,7 @@ window.addEventListener("load", function()
 {
 	const repo = document.querySelectorAll(".repository .repo-title a");
 	
-	if (repo && repo.length == 2 && repo[1].innerHTML.indexOf("/") == -1 && repo[1].innerHTML.indexOf("\t") == -1 && repo[1].innerHTML.indexOf(" ") == -1)
+	if (repo && repo.length >= 2 && repo[1].innerHTML.indexOf("/") == -1 && repo[1].innerHTML.indexOf("\t") == -1 && repo[1].innerHTML.indexOf(" ") == -1)
 	{
         const active = document.querySelector(".active.item");		
 		const h5p_json = document.querySelector("a[title='h5p.json']");
