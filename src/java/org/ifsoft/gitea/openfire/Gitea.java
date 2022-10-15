@@ -49,7 +49,7 @@ import de.mxro.process.*;
 public class Gitea implements Plugin, PropertyEventListener, ProcessListener
 {
     private static final Logger Log = LoggerFactory.getLogger(Gitea.class);
-    private static final String GITEA_VERSION = "1.17.2";
+    private static final String GITEA_VERSION = "1.17.3";
     private XProcess giteaThread = null;
     private String giteaExePath = null;
     private String giteaHomePath = null;
