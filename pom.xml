@@ -12,7 +12,7 @@
     
     <groupId>org.igniterealtime.openfire</groupId>
     <artifactId>zgitea</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4-SNAPSHOT</version>
     
     <properties>   
         <gitea.version>1.17.3</gitea.version>        
