@@ -7,7 +7,7 @@
     <parent>
         <artifactId>plugins</artifactId>
         <groupId>org.igniterealtime.openfire</groupId>
-        <version>4.5.1</version>
+        <version>4.8.1</version>
     </parent>
     
     <groupId>org.igniterealtime.openfire</groupId>
@@ -15,7 +15,7 @@
     <version>0.0.4-SNAPSHOT</version>
     
     <properties>   
-        <gitea.version>1.17.3</gitea.version>        
+        <gitea.version>1.21.8</gitea.version>        
         <hugo.version>0.101.0</hugo.version>  		
     </properties>    
 
@@ -140,7 +140,7 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-proxy</artifactId>
-            <version>9.4.18.v20190429</version>
+			<version>${jetty.version}</version>
         </dependency>
         
         <dependency>

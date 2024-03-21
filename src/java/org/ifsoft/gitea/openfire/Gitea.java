@@ -45,11 +45,12 @@ import java.util.*;
 import org.jitsi.util.OSUtils;
 import de.mxro.process.*;
 
+import org.xmpp.packet.JID;
 
 public class Gitea implements Plugin, PropertyEventListener, ProcessListener
 {
     private static final Logger Log = LoggerFactory.getLogger(Gitea.class);
-    private static final String GITEA_VERSION = "1.17.3";
+    private static final String GITEA_VERSION = "1.21.8";
     private XProcess giteaThread = null;
     private String giteaExePath = null;
     private String giteaHomePath = null;
@@ -182,7 +183,7 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
             giteaContext = new ServletContextHandler(null, "/", ServletContextHandler.SESSIONS);
             giteaContext.setClassLoader(this.getClass().getClassLoader());
 			
-			String parameters = " --config " + giteaRoot + "/app.ini";
+			String parameters = " --config " + giteaRoot + "/app.ini" + " --custom-path " + giteaHomePath + "/custom";
             giteaThread = Spawn.startProcess(giteaExePath + parameters, new File(giteaHomePath), this);
 			
             ServletHolder proxyServlet = new ServletHolder(ProxyServlet.Transparent.class);
@@ -472,9 +473,9 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
 		{
 			authorizedJIDs = authorizedJIDs + "," + administrator + "@" + domain;
 			JiveGlobals.setProperty("admin.authorizedJIDs", authorizedJIDs);
-		}		
+		}				
 
-        if ( !userManager.isRegisteredUser( administrator ) )
+        if ( !userManager.isRegisteredUser( new JID(administrator + "@" + domain), false ) )
         {
             Log.info( "No administrator user detected. Generating one." );
 
