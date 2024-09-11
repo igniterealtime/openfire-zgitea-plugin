@@ -24,9 +24,9 @@
                 status = "pulled ok";
             }
 
-			String parameters = " -D --destination " + Gitea.self.getHome() + "/custom/public/www" + repo;
+			String parameters = " -D --destination " + Gitea.self.getHome().resolve("custom").resolve("public").resolve("www"+repo);
 			
-            Spawn.startProcess(Gitea.self.getHugoExePath() + parameters, repoFolderPath, new ProcessListener() 
+            Spawn.startProcess(Gitea.self.getHugoExePath().toAbsolutePath() + parameters, repoFolderPath, new ProcessListener()
 			{
 				public void onOutputLine(final String line) {
 					Log.info(line);
