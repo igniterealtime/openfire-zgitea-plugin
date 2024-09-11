@@ -1,4 +1,6 @@
 <%@ page import="org.ifsoft.gitea.openfire.Gitea, org.jivesoftware.util.JiveGlobals, org.jivesoftware.openfire.*, java.io.*, org.slf4j.*, org.eclipse.jgit.api.*, org.jbake.app.Oven" %>
+<%@ page import="java.nio.file.Path" %>
+<%@ page import="java.nio.file.Files" %>
 <%
     Logger Log = LoggerFactory.getLogger(getClass());
     String repo = request.getParameter("repo"); 
@@ -10,22 +12,21 @@
         {
             Git git = null;
             String giteaUrl = "http://" + JiveGlobals.getProperty("gitea.ipaddr", "127.0.0.1") + ":" + JiveGlobals.getProperty("gitea.port", "3000");    
-            String repoFolder = JiveGlobals.getHomeDirectory() + "/gitea/repos" + repo;
-            File repoFolderPath = new File(repoFolder); 
+            Path repoFolder = JiveGlobals.getHomePath().resolve("gitea").resolve("repos" + repo);
 
-            if (!repoFolderPath.exists())
+            if (!Files.exists(repoFolder))
             {
-                git = Git.cloneRepository().setURI(giteaUrl + repo + ".git").setDirectory(repoFolderPath).call(); 
+                git = Git.cloneRepository().setURI(giteaUrl + repo + ".git").setDirectory(repoFolder.toFile()).call();
                 status = "cloned ok";            
             }
             else {
-                git = Git.open(repoFolderPath);
+                git = Git.open(repoFolder.toFile());
                 PullResult result = git.pull().call(); 
                 status = "pulled ok";
             }
 
-            File destination =  new File(Gitea.self.getHome() + "/custom/public/www" + repo);
-            Oven oven = new Oven(repoFolderPath, destination, true);
+            File destination = Gitea.self.getHome().resolve("custom").resolve("public").resolve("www" + repo).toFile();
+            Oven oven = new Oven(repoFolder.toFile(), destination, true);
             oven.setupPaths();
             oven.bake();   
             status = "baked ok";        
