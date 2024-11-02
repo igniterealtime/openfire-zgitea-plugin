@@ -6,7 +6,7 @@
     <description>${project.description}</description>
     <version>${project.version}</version>
     <licenseType>Apache 2.0</licenseType>
-    <date>04-30-2024</date>
+    <date>2024-04-30</date>
     <minServerVersion>4.8.0</minServerVersion>
 
    <adminconsole>
