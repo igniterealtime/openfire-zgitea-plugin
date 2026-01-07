@@ -4,8 +4,6 @@ import java.io.File;
 import java.net.*;
 import java.util.concurrent.*;
 import java.util.*;
-import java.util.function.*;
-import java.util.stream.*;
 import java.nio.file.*;
 import java.nio.charset.Charset;
 import java.security.Security;
@@ -27,9 +25,7 @@ import org.jivesoftware.util.StringUtils;
 
 import org.eclipse.jetty.apache.jsp.JettyJasperInitializer;
 import org.eclipse.jetty.plus.annotation.ContainerInitializer;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.proxy.ProxyServlet;
-import org.eclipse.jetty.servlets.*;
 import org.eclipse.jetty.servlet.*;
 import org.eclipse.jetty.webapp.WebAppContext;
 
@@ -38,9 +34,6 @@ import org.apache.tomcat.SimpleInstanceManager;
 import org.eclipse.jetty.util.security.*;
 import org.eclipse.jetty.security.*;
 import org.eclipse.jetty.security.authentication.*;
-
-import java.lang.reflect.*;
-import java.util.*;
 
 import org.jitsi.util.OSUtils;
 import de.mxro.process.*;
@@ -52,10 +45,10 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
     private static final Logger Log = LoggerFactory.getLogger(Gitea.class);
     private static final String GITEA_VERSION = "1.21.8";
     private XProcess giteaThread = null;
-    private String giteaExePath = null;
-    private String giteaHomePath = null;
-	private String hugoExePath = null;
-    private String giteaRoot = null;
+    private Path giteaExePath = null;
+    private Path giteaHomePath = null;
+	private Path hugoExePath = null;
+    private Path giteaRoot = null;
     private ExecutorService executor;
     private ServletContextHandler giteaContext;
     private WebAppContext jspService;
@@ -95,12 +88,12 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
         return "3000";
     }
 
-    public String getHugoExePath()
+    public Path getHugoExePath()
     {
         return hugoExePath;
     }
 	
-    public String getHome()
+    public Path getHome()
     {
         return giteaHomePath;
     }
@@ -183,8 +176,8 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
             giteaContext = new ServletContextHandler(null, "/", ServletContextHandler.SESSIONS);
             giteaContext.setClassLoader(this.getClass().getClassLoader());
 			
-			String parameters = " --config " + giteaRoot + "/app.ini" + " --custom-path " + giteaHomePath + "/custom";
-            giteaThread = Spawn.startProcess(giteaExePath + parameters, new File(giteaHomePath), this);
+			String parameters = " --config " + giteaRoot + "/app.ini" + " --custom-path " + giteaHomePath.resolve("custom").toAbsolutePath();
+            giteaThread = Spawn.startProcess(giteaExePath + parameters, giteaHomePath.toFile(), this);
 			
             ServletHolder proxyServlet = new ServletHolder(ProxyServlet.Transparent.class);
             String giteaUrl = "http://" + JiveGlobals.getProperty("gitea.ipaddr", getIpAddress()) + ":" + JiveGlobals.getProperty("gitea.port", getPort());
@@ -205,37 +198,34 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
     {
         try
         {
-            giteaRoot = (JiveGlobals.getHomeDirectory() + File.separator + "gitea").replace("\\", "/");
-
-            File giteaRootPath = new File(giteaRoot);
-
-            if (!giteaRootPath.exists()) {
-                giteaRootPath.mkdirs();							
+            giteaRoot = JiveGlobals.getHomePath().resolve("gitea");
+            if (!Files.exists(giteaRoot)) {
+                Files.createDirectories(giteaRoot);
             }
 
-            giteaHomePath = (pluginDirectory.getAbsolutePath() + File.separator + "classes").replace("\\", "/");
+            giteaHomePath = pluginDirectory.toPath().resolve("classes").toAbsolutePath();
             String gitea = null;
             String hugo = null;			
 
             if(OSUtils.IS_LINUX64)
             {
                 gitea = "gitea-" + GITEA_VERSION + "-linux-amd64";
-                giteaHomePath = giteaHomePath + File.separator + "linux-64";
-                giteaExePath = giteaHomePath + File.separator + gitea;
-                makeFileExecutable(giteaExePath);
+                giteaHomePath = giteaHomePath.resolve("linux-64");
+                giteaExePath = giteaHomePath.resolve(gitea);
+                makeFileExecutable(giteaExePath.toFile());
 				
-                hugoExePath = giteaHomePath + File.separator + "hugo";
-                makeFileExecutable(hugoExePath);				
+                hugoExePath = giteaHomePath.resolve("hugo");
+                makeFileExecutable(hugoExePath.toFile());
             }
             else if(OSUtils.IS_WINDOWS64)
             {
                 gitea = "gitea-" + GITEA_VERSION + "-gogit-windows-4.0-amd64.exe";
-                giteaHomePath = giteaHomePath + File.separator + "win-64";
-                giteaExePath = giteaHomePath + File.separator + gitea;
-                makeFileExecutable(giteaExePath);
+                giteaHomePath = giteaHomePath.resolve("win-64");
+                giteaExePath = giteaHomePath.resolve(gitea);
+                makeFileExecutable(giteaExePath.toFile());
 				
-                hugoExePath = giteaHomePath + File.separator + "hugo.exe";
-                makeFileExecutable(hugoExePath);					
+                hugoExePath = giteaHomePath.resolve("hugo.exe");
+                makeFileExecutable(hugoExePath.toFile());
 
             } else {
                 Log.error("checkNatives unknown OS " + pluginDirectory.getAbsolutePath());
@@ -248,13 +238,12 @@ public class Gitea implements Plugin, PropertyEventListener, ProcessListener
         }
     }
 
-    private void makeFileExecutable(String path)
+    private void makeFileExecutable(File file)
     {
-        File file = new File(path);
         file.setReadable(true, true);
         file.setWritable(true, true);
         file.setExecutable(true, true);
-        Log.info("checkNatives gitea executable path " + path);
+        Log.info("checkNatives gitea executable path " + file);
     }
 
     private void setupGiteaJDBC()
